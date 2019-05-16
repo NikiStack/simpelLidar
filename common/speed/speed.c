@@ -205,7 +205,7 @@ void motor_encoder_timer(unsigned int timeout_ms)
 	{
 		if(millis() > timeOut)
 		{
-			printf("Enter motor encoder timer!\n");
+			//printf("Enter motor encoder timer!\n");
 			for(int i = 0; i < 3; i++)
 			{
 				timeOut = millis() + timeout_ms;
@@ -214,11 +214,11 @@ void motor_encoder_timer(unsigned int timeout_ms)
 				/*display the pulse every 100ms time*/
 				if(s_speed_data[i].ENCODER_COUNT_DIRECTION >= 0)
 				{
-					printf("get data %d is %d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
+				//	printf("get data %d is %d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
 				}
 				else
 				{
-					printf("get data %d is -%d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
+				//	printf("get data %d is -%d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
 				}
 
 			}

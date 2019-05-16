@@ -27,8 +27,7 @@ void motor_init(void)
 	softPwmWrite(MOTOR_EN_2, MOTOR_PWM_INIT_DUTY);
 	softPwmWrite(MOTOR_EN_3, MOTOR_PWM_INIT_DUTY);
 	
-	digitalWrite(8, HIGH);
-#if 0	
+#if 0 //for test
 	digitalWrite(MOTOR_LEFT_1, HIGH);
 	digitalWrite(MOTOR_LEFT_2, HIGH);
 	digitalWrite(MOTOR_LEFT_3, HIGH);
@@ -36,10 +35,14 @@ void motor_init(void)
 	digitalWrite(MOTOR_RIGHT_1, LOW);
 	digitalWrite(MOTOR_RIGHT_2, LOW);
 	digitalWrite(MOTOR_RIGHT_3, LOW);
-#elif 1	
+
 	softPwmWrite(MOTOR_EN_1, 50);
-	softPwmWrite(MOTOR_EN_2, 100);
-	softPwmWrite(MOTOR_EN_3, 10);
+	softPwmWrite(MOTOR_EN_2, 10);
+	softPwmWrite(MOTOR_EN_3, 100);
+#else
+//	motor_set_wheel_action(1, 2, 100);
+//	motor_set_wheel_action(2, 1, 100);
+//	motor_set_wheel_action(3, 2, 100);
 #endif
 }
 
@@ -69,10 +72,17 @@ int motor_set_wheel_action(unsigned char wheel, unsigned int direction, unsigned
 					MOTOR_STOP(MOTOR_LEFT_1, MOTOR_RIGHT_1);
 					break;
 				case 1://back
-					MOTOR_TURN_BACK(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+		//			MOTOR_TURN_BACK(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+					digitalWrite(MOTOR_LEFT_1, HIGH);
+					digitalWrite(MOTOR_RIGHT_1, LOW);
+	
+					printf("motor 1 direction set back!\n");
 					break;
 				case 2://front
-					MOTOR_TURN_FRONT(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+					digitalWrite(MOTOR_LEFT_1, LOW);
+					digitalWrite(MOTOR_RIGHT_1, HIGH);
+					//MOTOR_TURN_FRONT(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+					printf("motor 1 direction set front!\n");
 					break;
 				default:
 					printf("motor direction set error!\n");
@@ -80,6 +90,7 @@ int motor_set_wheel_action(unsigned char wheel, unsigned int direction, unsigned
 			}
 			//set motor speed
 			softPwmWrite(MOTOR_EN_1, speed);
+			printf ("set motor 1 speed id %d", speed);
 			break;
 		case 2://Motor 2
 			switch (direction)

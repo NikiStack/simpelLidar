@@ -1,6 +1,6 @@
 #include "./include/controller.h"
 #include "./include/motor.h"
-
+#if 0
 #define AFA 60
 #define L   120;
 
@@ -24,7 +24,7 @@ ActThreeVell ThreeWheelVellControl(float Vx, float Vy, float angularVell)
 
 	return vell;
 }
-
+#endif
 
 
 
