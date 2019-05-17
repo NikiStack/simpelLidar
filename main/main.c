@@ -12,22 +12,18 @@ int main(void)
  	wiringPiSetup();
 	motor_init();
 	motor_encoder_init();
-	
-	//pinMode(8, OUTPUT);
-	//pinMode(7, OUTPUT);
-	//pinMode(9, OUTPUT);
 
-	//digitalWrite(8, HIGH);
-	//digitalWrite(7, LOW);
-	//digitalWrite(9, HIGH);
 	for(;;)
 	{
 		//motor_set_wheel_action(0, 1, 100);
 		//motor_set_wheel_action(1, 0, 50);
 		//motor_set_wheel_action(2, 1, 10);
 		delay(5000);
-	motor_set_wheel_action(1, 1, 100);
+		motor_set_wheel_action(1, 1, 100);
 		delay(5000);
-	motor_set_wheel_action(1, 2, 100);
+		motor_set_wheel_action(1, 2, 100);
+		delay(5000);
+		motor_exit();
+		delay(10000);
 	}
 }

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <pthread.h>
 #include <wiringPi.h>
 #include "./include/speed.h"
 
@@ -52,8 +51,8 @@ void motor_encoder_init(void)
 	wiringPiISR(MOTOR_ENCODER_B_3, INT_EDGE_BOTH, &motor_encoder_b_3_isr);
 #endif
 	//creat a pthread for speed timer
-	piThreadCreate(soft_timer_thread) ;
-	piThreadCreate(soft_gpio_status_get_thread) ;
+	piThreadCreate(soft_timer_thread);
+	piThreadCreate(soft_gpio_status_get_thread);
 
 }
 //velocity(mm/ms)

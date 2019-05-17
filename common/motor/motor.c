@@ -72,17 +72,14 @@ int motor_set_wheel_action(unsigned char wheel, unsigned int direction, unsigned
 					MOTOR_STOP(MOTOR_LEFT_1, MOTOR_RIGHT_1);
 					break;
 				case 1://back
-		//			MOTOR_TURN_BACK(MOTOR_LEFT_1, MOTOR_RIGHT_1);
-					digitalWrite(MOTOR_LEFT_1, HIGH);
-					digitalWrite(MOTOR_RIGHT_1, LOW);
-	
-					printf("motor 1 direction set back!\n");
+					MOTOR_TURN_BACK(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+					//printf("motor 1 direction set back!\n");
 					break;
 				case 2://front
-					digitalWrite(MOTOR_LEFT_1, LOW);
-					digitalWrite(MOTOR_RIGHT_1, HIGH);
-					//MOTOR_TURN_FRONT(MOTOR_LEFT_1, MOTOR_RIGHT_1);
-					printf("motor 1 direction set front!\n");
+					//digitalWrite(MOTOR_LEFT_1, LOW);
+					//digitalWrite(MOTOR_RIGHT_1, HIGH);
+					MOTOR_TURN_FRONT(MOTOR_LEFT_1, MOTOR_RIGHT_1);
+					//printf("motor 1 direction set front!\n");
 					break;
 				default:
 					printf("motor direction set error!\n");

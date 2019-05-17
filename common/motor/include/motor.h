@@ -25,5 +25,6 @@
 #define MOTOR_STOP(x,y)			{digitalWrite(x, HIGH);digitalWrite(y, HIGH);}
 
 extern void motor_init(void);
+extern void motor_exit(void);
 extern int motor_set_wheel_action(unsigned char, unsigned int, unsigned char);
 #endif
