@@ -8,7 +8,7 @@
 #define LIDAR_DEVICE_ID	"/dev/ttyUSB0"
 #define LIDAR_PWM_INIT_DUTY	0
 #define LIDAR_PWM_CYCLE	100
-#define LIDAR_PWM_EN	0 //slam pwm pin num
+#define LIDAR_PWM_EN	1 //slam pwm pin num
 #define uint16_t unsigned int
 #define uint8_t	unsigned char
 /*
@@ -45,6 +45,8 @@ int slam_uart_init(void)
 
 	pinMode(LIDAR_PWM_EN, OUTPUT);
 	softPwmCreate(LIDAR_PWM_EN, LIDAR_PWM_INIT_DUTY, LIDAR_PWM_CYCLE);	
+	//pwmWrite(LIDAR_PWM_EN,1023);
+	softPwmWrite(LIDAR_PWM_EN, 10);
 	return ret;
 }
 
@@ -89,7 +91,7 @@ PI_THREAD (slam_poll_thread)
 	unsigned char raw_bytes[2520]={0};
 	char ret;
 	int rpms;
-	while(1)
+	while(!got_scan)
 	{
 		read(fd, &raw_bytes[start_count], 1);
 		if(0 == start_count)
@@ -133,12 +135,16 @@ PI_THREAD (slam_poll_thread)
 							// uint16_t intensity = (byte3 << 8) + byte2;
 							uint16_t range = (byte3 << 8) + byte2;
 
-							if(index == 1)
-							printf ("r[%d]=%f,intensity = %f\n",359-index, range / 1000.0, intensity);
+							if(index == 20)
+							printf ("r[%d]=%f,\n",359-index, range / 1000.0);
 						}
 					}
         			}
 			}
+		}
+		else
+		{
+			start_count = 0;
 		}
 	}
 }	
