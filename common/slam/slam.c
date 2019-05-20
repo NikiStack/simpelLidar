@@ -6,28 +6,9 @@
 
 #define LIDAR_BUAD	230400
 #define LIDAR_DEVICE_ID	"/dev/ttyUSB0"
-#define LIDAR_PWM_INIT_DUTY	0
-#define LIDAR_PWM_CYCLE	100
-#define LIDAR_PWM_EN	1 //slam pwm pin num
 #define uint16_t unsigned int
 #define uint8_t	unsigned char
-/*
-uart
-extern int   serialOpen      (const char *device, const int baud) ;
-extern void  serialClose     (const int fd) ;
-extern void  serialFlush     (const int fd) ;
-extern void  serialPutchar   (const int fd, const unsigned char c) ;
-extern void  serialPuts      (const int fd, const char *s) ;
-extern void  serialPrintf    (const int fd, const char *message, ...) ;
-extern int   serialDataAvail (const int fd) ;
-extern int   serialGetchar   (const int fd) ;
 
-pwm
-extern int  softPwmCreate (int pin, int value, int range) ;
-extern void softPwmWrite  (int pin, int value) ;
-extern void softPwmStop   (int pin) ;
-
-*/
 
 static int fd ;
 
@@ -50,17 +31,6 @@ int slam_uart_init(void)
 	return ret;
 }
 
-int slam_speed_adj(unsigned char speed)
-{
-	char ret = 0;
-	if(speed > 100 || speed < 0)
-	{
-		ret = -1;
-	}
-	softPwmWrite(LIDAR_PWM_EN, speed);
-	return ret;
-}
-
 void slam_start(void)
 {
 //	serialPutchar(fd, 'b');
@@ -70,7 +40,7 @@ void slam_start(void)
 }
 void slam_stop(void)
 {
-	//serialPutchar(fd, 'e');
+//	serialPutchar(fd, 'e');
 //	serialPuts(fd, "e\n");
 	write(fd,"e\n", 1 );
 }
@@ -99,7 +69,6 @@ PI_THREAD (slam_poll_thread)
 			if(0xFA == raw_bytes[start_count])
 			{
 				start_count = 1;
-				//printf("start_count = 1\n");
 			}
 		}
 		else if(1 == start_count)
@@ -111,35 +80,35 @@ PI_THREAD (slam_poll_thread)
 				
 				read(fd, &raw_bytes[2], 2518);
 				for(uint16_t i = 0; i < 2520; i=i+42)
-        			{
-          				if(raw_bytes[i] == 0xFA && raw_bytes[i+1] == (0xA0 + i / 42)) //&& CRC check
-          				{
-            					good_sets++;
-            					motor_speed += (raw_bytes[i+3] << 8) + raw_bytes[i+2]; //accumulate count for avg. time increment
-            					rpms=(raw_bytes[i+3]<<8|raw_bytes[i+2])/10;
+        		{
+      				if(raw_bytes[i] == 0xFA && raw_bytes[i+1] == (0xA0 + i / 42)) //&& CRC check
+      				{
+        					good_sets++;
+        					motor_speed += (raw_bytes[i+3] << 8) + raw_bytes[i+2]; //accumulate count for avg. time increment
+        					rpms=(raw_bytes[i+3]<<8|raw_bytes[i+2])/10;
 
 						for(uint16_t j = i+4; j < i+40; j=j+6)
-            					{
-            						index = 6*(i/42) + (j-4-i)/6;
+        				{
+    						index = 6*(i/42) + (j-4-i)/6;
 
-              						// Four bytes per reading
-              						uint8_t byte0 = raw_bytes[j];
-              						uint8_t byte1 = raw_bytes[j+1];
-              						uint8_t byte2 = raw_bytes[j+2];
-              						uint8_t byte3 = raw_bytes[j+3];
+      						// Four bytes per reading
+      						uint8_t byte0 = raw_bytes[j];
+      						uint8_t byte1 = raw_bytes[j+1];
+      						uint8_t byte2 = raw_bytes[j+2];
+      						uint8_t byte3 = raw_bytes[j+3];
 
-              						// Remaining bits are the range in mm
-             						uint16_t intensity = (byte1 << 8) + byte0;
+      						// Remaining bits are the range in mm
+     						uint16_t intensity = (byte1 << 8) + byte0;
 
-          						// Last two bytes represent the uncertanty or intensity, might also be pixel area of target...
+  							// Last two bytes represent the uncertanty or intensity, might also be pixel area of target...
 							// uint16_t intensity = (byte3 << 8) + byte2;
 							uint16_t range = (byte3 << 8) + byte2;
 
 							if(index == 20)
-							printf ("r[%d]=%f,\n",359-index, range / 1000.0);
+								printf ("r[%d]=%f,\n",359-index, range / 1000.0);
 						}
 					}
-        			}
+        		}
 			}
 		}
 		else
