@@ -24,10 +24,6 @@ int slam_uart_init(void)
 		ret = -1 ;
 	}
 
-	pinMode(LIDAR_PWM_EN, OUTPUT);
-	softPwmCreate(LIDAR_PWM_EN, LIDAR_PWM_INIT_DUTY, LIDAR_PWM_CYCLE);	
-	//pwmWrite(LIDAR_PWM_EN,1023);
-	softPwmWrite(LIDAR_PWM_EN, 10);
 	return ret;
 }
 
