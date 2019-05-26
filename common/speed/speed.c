@@ -213,11 +213,11 @@ void motor_encoder_timer(unsigned int timeout_ms)
 				/*display the pulse every 100ms time*/
 				if(s_speed_data[i].ENCODER_COUNT_DIRECTION >= 0)
 				{
-				//	printf("get data %d is %d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
+					printf("get data %d is %d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
 				}
 				else
 				{
-				//	printf("get data %d is -%d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
+					printf("get data %d is -%d\n",i, s_speed_data[i].EMCODER_TIME_FOR_SPEED);
 				}
 
 			}
