@@ -1,0 +1,27 @@
+#sublime
+首先下载Sublime Text 3存储库的安全密钥。这将确保从回购站下载的软件包经过身份验证等：
+
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+
+下一步。 将Sublime Text稳定库添加到您的软件源中：
+
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+
+如果你想运行Sublime Text的最新开发版本，你可以：只需运行这个命令，而不是上面的命令：
+
+echo "deb https://download.sublimetext.com/ apt/dev/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+
+无论是稳定还是开发，一旦您添加了，您都可以继续运行更新并安装应用程序：
+
+sudo apt update && sudo apt install sublime-text
+
+这就是你需要做的所有事情。
+
+安装完成后，您可以从桌面应用启动器启动应用程序。
+
+#ssh
+使用apt工具下载并安装openssh-server
+输入命令：
+
+sudo apt install openssh-server
+

@@ -1,0 +1,3 @@
+OpenWRT
+#工具安装
+opkg install make

@@ -1,0 +1,82 @@
+#ssh
+ssh root@192.168.2.143
+ssh root@192.168.2.192
+ssh root@10.176.176.174
+root
+fa
+#从ssh 拷贝文件到本地电脑
+scp -r root@192.168.2.191:/root/lxb/test/simpleLidar /home/lxb/work/project/ 
+scp -r   /home/lxb/work/simpleLidar root@192.168.2.191:/home/project/simpleLidar
+#从本地 拷贝文件到H5开发板
+scp -r /home/lxb/work/project/simpleLidar root@192.168.2.191:/home/project/simpleLidar
+
+#串口相关的指令
+lsmod | grep usbserial //查看usb串口设备
+dmesg | grep ttyUSB
+
+#linux下通过dd指令烧写系统到sd
+查看挂载的U盘
+fdisk -l
+移除U盘
+umount /dev/sdb1
+umount /dev/sdb2
+格式化
+sudo mkfs.vfat /dev/sdb -I 
+烧写
+sudo dd if=./nanopi-neo2_sd_openwrt_4.14_arm64_20190430.img of=/dev/sdb && sync
+
+#H5开发板设置配置选项
+sudo npi-config 命令，进入Advanced Options菜单
+主要用于设置wifi信息，一些外设的Enable，ssh，uart，pwm...Cpu使用配置等
+
+#wifi连接
+su root
+nmcli dev
+nmcli r wifi on
+nmcli dev wifi
+nmcli dev wifi connect 'Niki2.4G' password 'asdfg12345!@' ifname wlan0
+
+#gpio
+ +-----+-----+----------+------+---+-NanoPi-NEO2--+------+----------+-----+-----+
+ | BCM | wPi |   Name   | Mode | V | Physical | V | Mode | Name     | wPi | BCM |
+ +-----+-----+----------+------+---+----++----+---+------+----------+-----+-----+
+ |     |     |     3.3V |      |   |  1 || 2  |   |      | 5V       |     |     |
+ |  12 |   8 |  GPIOA12 | ALT5 | 0 |  3 || 4  |   |      | 5V       |     |     |
+ |  11 |   9 |  GPIOA11 | ALT5 | 0 |  5 || 6  |   |      | 0v       |     |     |
+ | 203 |   7 |  GPIOG11 |  OUT | 1 |  7 || 8  | 0 | ALT5 | GPIOG6   | 15  | 198 |
+ |     |     |       0v |      |   |  9 || 10 | 0 | ALT5 | GPIOG7   | 16  | 199 |
+ |   0 |   0 |   GPIOA0 | ALT5 | 0 | 11 || 12 | 0 | OUT  | GPIOA6   | 1   | 6   |
+ |   2 |   2 |   GPIOA2 |  OFF | 0 | 13 || 14 |   |      | 0v       |     |     |
+ |   3 |   3 |   GPIOA3 |  OFF | 0 | 15 || 16 | 0 | OFF  | GPIOG8   | 4   | 200 |
+ |     |     |     3.3v |      |   | 17 || 18 | 0 | OFF  | GPIOG9   | 5   | 201 |
+ |  64 |  12 |   GPIOC0 | ALT4 | 0 | 19 || 20 |   |      | 0v       |     |     |
+ |  65 |  13 |   GPIOC1 | ALT4 | 0 | 21 || 22 | 0 | ALT5 | GPIOA1   | 6   | 1   |
+ |  66 |  14 |   GPIOC2 | ALT4 | 0 | 23 || 24 | 1 | OUT  | GPIOC3   | 10  | 67  |
+ +-----+-----+----------+------+---+----++----+---+------+----------+-----+-----+
+ | BCM | wPi |   Name   | Mode | V | Physical | V | Mode | Name     | wPi | BCM |
+ +-----+-----+----------+------+---+-NanoPi-NEO2--xx+------+----------+-----+-----+
+
+ +-----+----NanoPi-NEO2 USB/Audio-+----+
+ | BCM | wPi |   Name   | Mode | V | Ph |
+ +-----+-----+----------+------+---+----+
+ |     |     |       5V |      |   | 25 |
+ |     |     |  USB-DP1 |      |   | 26 |
+ |     |     |  USB-DM1 |      |   | 27 |
+ |     |     |  USB-DP2 |      |   | 28 |
+ |     |     |  USB-DM2 |      |   | 29 |
+ |     |     |    IR-RX |      |   | 30 |
+ |  17 |  19 |  GPIOA17 |  OFF | 0 | 31 |
+ |     |     |  PCM/I2C |      |   | 32 |
+ |     |     |  PCM/I2C |      |   | 33 |
+ |     |     |  PCM/I2C |      |   | 34 |
+ |     |     |  PCM/I2C |      |   | 35 |
+ |     |     |       0V |      |   | 36 |
+ +-----+-----+----------+------+---+----+
+
+ +-----+----NanoPi-NEO2 Debug UART-+----+
+ | BCM | wPi |   Name   | Mode | V | Ph |
+ +-----+-----+----------+------+---+----+
+ |   4 |  17 |   GPIOA4 | ALT5 | 0 | 37 |
+ |   5 |  18 |   GPIOA5 | ALT5 | 0 | 38 |
+ +-----+-----+----------+------+---+----+
+

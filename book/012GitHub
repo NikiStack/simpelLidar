@@ -1,0 +1,5 @@
+git config --global user.name "NikiStack"
+
+git config --global user.email "liqingji0601@gmail.com"
+
+ssh-keygen -t rsa -C "liqingji0601@gmail.com"

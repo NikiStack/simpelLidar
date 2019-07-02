@@ -1,0 +1,99 @@
+
+#编译指令
+gcc -Wall -o test test.c -lwiringPi -lpthread
+sudo ./test
+
+#gcc教程
+http://c.biancheng.net/gcc/
+
+-w的意思是关闭编译时的警告，也就是编译后不显示任何warning，因为有时在编译之后编译器会显示一些例如数据转换之类的警告，这些警告是我们平时可以忽略的。
+-Wall选项意思是编译后显示所有警告。
+-W选项类似-Wall，会显示警告，但是只显示编译器认为会出现错误的警告。
+
+
+
+
+
+
+
+
+
+
+
+5 为H5编译Linux-4.14 BSP
+5.1 安装交叉编译器
+访问此处下载地址的toolchain目录，下载交叉编译器gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz，然后解压编译器:
+
+mkdir -p /opt/FriendlyARM/toolchain
+tar xf gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz -C /opt/FriendlyARM/toolchain/
+然后将编译器的路径加入到PATH中，用vi编辑vi ~/.bashrc，在末尾加入以下内容：
+
+export PATH=/opt/FriendlyARM/toolchain/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin:$PATH
+export GCC_COLORS=auto
+执行一下~/.bashrc脚本让设置立即在当前shell窗口中生效，注意"."后面有个空格：
+
+. ~/.bashrc
+安装完成后，你可以快速的验证是否安装成功：
+
+aarch64-linux-gnu-gcc -v
+gcc version 6.3.1 20170109 (Linaro GCC 6.3-2017.02)
+5.2 编译U-boot
+下载U-boot源码，并切换分支:
+
+git clone https://github.com/friendlyarm/u-boot.git -b sunxi-v2017.x --depth 1
+编译U-boot:
+
+apt-get install swig python-dev python3-dev
+cd u-boot
+make nanopi_h5_defconfig CROSS_COMPILE=aarch64-linux-gnu-
+make CROSS_COMPILE=aarch64-linux-gnu-
+这里使用的配置文件nanopi_h5_defconfig可以支持友善电子所有的H5的开发板。
+更新SD上的U-boot:
+将SD卡插入PC中，然后执行如下命令:
+
+cd u-boot
+dd if=spl/sunxi-spl.bin of=/dev/sdX bs=1024 seek=8
+dd if=u-boot.itb of=/dev/sdX bs=1024 seek=40
+/dev/sdx请替换为实际的TF卡设备文件名。
+
+当正在使用SD卡运行系统时，也可以先用scp命令拷贝sunxi-spl.bin和u-boot.itb到开发板上，然后用dd命令更新SD卡上的U-boot:
+
+scp spl/sunxi-spl.bin root@192.168.1.230:/root/
+scp u-boot.itb root@192.168.1.230:/root/
+dd if=/root/sunxi-spl.bin of=/dev/mmcblk0 bs=1024 seek=8
+dd if=/root/u-boot.itb of=/dev/mmcblk0 bs=1024 seek=8
+如果是带有eMMC的开发板，当正在使用eMMC运行系统时，也可以先用scp命令拷贝sunxi-spl.bin和u-boot.itb到开发板上，然后用dd命令更新eMMC上的U-boot:
+
+scp spl/sunxi-spl.bin root@192.168.1.230:/root/
+scp u-boot.itb root@192.168.1.230:/root/
+dd if=/root/u-boot-sunxi-with-spl.bin of=/dev/mmcblk0 bs=1024 seek=8
+NanoPi H5开发板的启动设备的设备节点总是/dev/mmcblk0。
+
+5.3 编译Linux内核
+下载Linux内核源码，并切换分支:
+
+git clone https://github.com/friendlyarm/linux.git -b sunxi-4.x.y --depth 1
+编译和更新Linux内核:
+
+cd linux
+touch .scmversion
+make sunxi_arm64_defconfig ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+make Image dtbs ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+编译完成后会在arch/arm64/boot/目录下生成Image，并且在arch/arm64/boot/dts/allwinner/目录下生成dtb文件。
+
+假设SD卡的boot分区挂载在/media/SD/boot/，更新SD卡上的Image和dtb文件:
+
+cp arch/arm64/boot/Image /media/SD/boot/
+cp arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi*.dtb /media/SD/boot/
+也可以用scp命令通过网络更新:
+
+scp arch/arm64/boot/Image root@192.168.1.230:/boot
+scp arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi*.dtb root@192.168.1.230:/boot
+编译和更新驱动模块:
+
+cd linux
+make modules ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+假设SD卡的rootfs分区挂载在/media/SD/rootfs/，更新SD卡上rootfs的驱动模块:
+
+cd linux
+make modules_install INSTALL_MOD_PATH=/media/SD/rootfs/ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
